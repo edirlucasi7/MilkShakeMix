@@ -774,8 +774,164 @@ public class TelaPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_RelatorioProdutosActionPerformed
 
     private void relatorioVendasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_relatorioVendasActionPerformed
+
         
-         int confirma = JOptionPane.showConfirmDialog(null, "Tem certeza que deseja fazer o download do relatório de vendas?", "Atenção", JOptionPane.YES_NO_OPTION);
+        int opcao = JOptionPane.showConfirmDialog(null, "Deseja efetuar o download do relatório de vendas entre duas datas ?");
+
+        if(opcao == JOptionPane.YES_OPTION){
+            
+        GregorianCalendar calendar = new GregorianCalendar();
+            int dia = calendar.get(GregorianCalendar.DAY_OF_MONTH);
+            int ano = calendar.get(GregorianCalendar.YEAR);
+            int mes = calendar.get(Calendar.MONTH) + 1;
+            calendar.add(Calendar.DAY_OF_MONTH, 1);
+            
+            Date amanhaCalendar = calendar.getTime();
+            String amanhaTexto = "" + amanhaCalendar;
+            
+            String amanha = amanhaTexto.substring(8,10);
+            
+            String dataAtual;
+            
+            if(dia < 10 && mes <= 9){
+                dataAtual = "0" + dia + "/0" + mes + "/" + ano;
+            }else{
+                dataAtual = dia + "/" + mes + "/" + ano;
+            }
+            
+            String dataAmanha;
+           
+             if(mes <= 9){
+                dataAmanha = amanha + "/0" + mes + "/" + ano;
+            }else{
+                dataAmanha = amanha + "/" + mes + "/" + ano;
+            }
+            
+             String data1 = JOptionPane.showInputDialog(null, "Ex : " + dataAtual , "Data de inicio", JOptionPane.QUESTION_MESSAGE);
+             String data2 = JOptionPane.showInputDialog(null, "Ex : " + dataAmanha , "Data de fim", JOptionPane.QUESTION_MESSAGE);
+            
+        String calendarioData1Ano = data1.substring(6,10);
+        String calendarioData1Mes = data1.substring(3,5); 
+        String calendarioData1Dia = data1.substring(0,2);
+        
+        String calendarioData2Ano = data2.substring(6,10);
+        String calendarioData2Mes = data2.substring(3,5); 
+        String calendarioData2Dia = data2.substring(0,2);
+
+          
+        String calendarioDataInicio = calendarioData1Ano + "-" + calendarioData1Mes + "-" + calendarioData1Dia;
+        String calendarioDataFim = calendarioData2Ano + "-" + calendarioData2Mes + "-" + calendarioData2Dia;
+        
+        Document doc = new Document();
+        String caminhoArquivoProjeto = "relatorioVendas(_'"+calendarioDataInicio+"' até _'"+calendarioDataFim+"'_).pdf";
+        String caminhoWindows = "C:/Users/NaCompra/Desktop/relatorioVendas(_'"+calendarioDataInicio+"' até _'"+calendarioDataFim+"'_).pdf";
+
+        String nome_documento = caminhoWindows;
+        
+        
+        try {
+            //Criando o arquivo, como default tá na pasta do projeto, pra mudar onde salvar o arquivo
+            // seria assim : PdfWriter.getInstance(doc, new FileOutputStream('.../nome_documento'));
+            PdfWriter.getInstance(doc, new FileOutputStream(nome_documento));
+
+            doc.open();
+            doc.setPageSize(PageSize.A4);
+            
+            Paragraph p = new Paragraph();
+            p.add("RELATÓRIO DE VENDAS");
+            p.setAlignment(Element.ALIGN_CENTER);
+            p.setIndentationLeft(18);
+            p.setFirstLineIndent(-18);
+            
+            doc.add(p);
+            doc.add(new Paragraph(" "));
+            
+            //Criando tabela  com 4 colunas
+            PdfPTable tabela = new PdfPTable(4);
+
+            //Criando cabeçalho pra tabela
+            PdfPCell cabecalho = new PdfPCell(new Paragraph("Lista de Vendas Cadastradas"));
+            //Alinahando o texto deste cabeçalho ao centro da tabela
+            cabecalho.setHorizontalAlignment(Element.ALIGN_CENTER);
+            //Aqui ele seta o tamanho deste cabeçalho para as 4 colunas
+            cabecalho.setColspan(4);
+
+            //Criando os cabeçalhos dos dados do banco
+            PdfPCell cabecalhoId = new PdfPCell(new Paragraph("Código"));
+            PdfPCell cabecalhoValor = new PdfPCell(new Paragraph("Valor"));
+            PdfPCell cabecalhoTipo = new PdfPCell(new Paragraph("Tipo"));
+            PdfPCell cabecalhoData = new PdfPCell(new Paragraph("Data"));
+//            PdfPCell cabecalhoTotal = new PdfPCell(new Paragraph("Total"));
+
+            //Adicionando a tabela todos os cabeçalhos
+            tabela.addCell(cabecalho);
+            tabela.addCell(cabecalhoId);
+            tabela.addCell(cabecalhoValor);
+            tabela.addCell(cabecalhoTipo);
+            tabela.addCell(cabecalhoData);
+//            tabela.addCell(cabecalhoTotal);
+
+            conexao = Conexao.conector();
+            ResultSet rs = con.ConsultarVendasEntreDuasDatas(calendarioDataInicio, calendarioDataFim);
+            ResultSet rs1 = con.ConsultarTotalVendasEntreDuasDatas(calendarioDataInicio, calendarioDataFim);
+            int id = 0;
+            String _valor = null, _data = null, _tipo = null;
+             
+
+            while(rs.next()){
+                id = rs.getInt("id");
+                _valor = rs.getString("valor");
+                _tipo = rs.getString("tipo"); 
+                _data = rs.getString("data");
+                
+                
+                //Convertendo o id para string
+                String identificadorProduto = String.valueOf(id);
+
+                //Adicionando as linhas da tabela com os dados do banco
+                tabela.addCell(identificadorProduto);
+                tabela.addCell(_valor);
+                tabela.addCell(_tipo);
+                tabela.addCell(_data); 
+                
+            }
+            
+            PdfPTable tabela1 = new PdfPTable(1);
+            
+            PdfPCell cabecalho1 = new PdfPCell(new Paragraph("Valor Total das Vendas Cadastradas"));
+            cabecalho1.setHorizontalAlignment(Element.ALIGN_CENTER);
+            cabecalho1.setColspan(1);
+            
+            PdfPCell cabecalho1Total = new PdfPCell(new Paragraph("Total:"));
+            cabecalho1Total.setHorizontalAlignment(Element.ALIGN_CENTER);
+            
+            tabela1.addCell(cabecalho1);
+            tabela1.addCell(cabecalho1Total);
+
+            String _total = null;
+            
+            while(rs1.next()) {
+                _total = rs1.getString("total");                
+                
+                tabela1.addCell("                                  ------------------ " + _total + " R$" + " ------------------"); 
+                
+            }
+
+            //Adicionando a tabela ao documento pdf
+            doc.add(tabela);
+            doc.add(tabela1);
+            PreparedStatement pst = null;
+
+        } catch (FileNotFoundException | DocumentException | SQLException ex) {
+            Logger.getLogger(TelaDevDatabase.class.getName()).log(Level.SEVERE, null, ex);
+        }finally{
+            //Fecha a configuração do documento
+            doc.close();
+        }
+            
+            
+        }else{
+            int confirma = JOptionPane.showConfirmDialog(null, "Tem certeza que deseja fazer o download do relatório de vendas?", "Atenção", JOptionPane.YES_NO_OPTION);
             if(confirma==JOptionPane.YES_OPTION) {
                 JOptionPane.showMessageDialog(null, "O Download do relatório foi realizado com sucesso e se encontra na Área de Trabalho.");
             
@@ -883,7 +1039,10 @@ public class TelaPrincipal extends javax.swing.JFrame {
             //Fecha a configuração do documento
             doc.close();
         }
-            }
+            } 
+        }
+        
+        
     }//GEN-LAST:event_relatorioVendasActionPerformed
 
     private void relatorioVendaDiariaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_relatorioVendaDiariaActionPerformed

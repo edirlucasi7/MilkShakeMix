@@ -176,6 +176,29 @@ public boolean cadastrarProduto(String nome_produto, String preco, String tamanh
         return rs;
     }
      
+      public ResultSet ConsultarVendasEntreDuasDatas(String data1, String data2) throws SQLException {
+         String sql = "select * from vendas where data BETWEEN ('"+data1+"') AND ('"+data2+"');";
+         
+        con = Conexao.conector();
+        st = con.createStatement();
+        ResultSet rs = null;
+        rs = st.executeQuery(sql);
+
+        return rs;
+         
+     }
+       public ResultSet ConsultarTotalVendasEntreDuasDatas(String data1, String data2) throws SQLException {
+
+        String sql = "select SUM(valor) as total from vendas where data BETWEEN '"+data1+"' AND '"+data2+"';";
+        
+        con = Conexao.conector();
+        st = con.createStatement();
+        ResultSet rs = null;
+        rs = st.executeQuery(sql);
+        
+        return rs;
+    }
+     
     public ResultSet ConsultarInsumosDiarias() throws SQLException {
         
         java.util.Date data = new java.util.Date();
