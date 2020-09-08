@@ -118,6 +118,8 @@ public class TelaProdutoDiverso extends javax.swing.JInternalFrame {
     private void cadastrarProdutoDiverso() {
         
         
+        
+        
             String campoData = txtDataInsumo.getText();
             
             String anoCampoData = campoData.substring(6,10);
@@ -146,7 +148,7 @@ public class TelaProdutoDiverso extends javax.swing.JInternalFrame {
             pst.setString(3, (String) cboProdutoQuantidade.getSelectedItem());
             pst.setString(4, calendar);
 
-            if (txtProdutoNome.getText().isEmpty() || txtProdutoPreco.getText().isEmpty()) {
+            if (txtProdutoNome.getText().isEmpty() || txtProdutoPreco.getText().isEmpty() || txtDataInsumo.getText().isEmpty()) {
                 JOptionPane.showMessageDialog(null, "Preencha todos os campos obrigatórios");
             } else {
 
