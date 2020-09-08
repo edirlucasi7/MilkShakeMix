@@ -87,8 +87,8 @@ public class ConexaoConfigTables{
         try {
             String sql = "create table produtosdiversos(id int NOT NULL AUTO_INCREMENT PRIMARY KEY, nomeproduto varchar(100) NOT NULL,"
                     + " preco varchar(100) NOT NULL,"
-                    + "quantidade varchar(100),"
-                    + "data varchar(100));";
+                    + "quantidade varchar(100) NOT NULL,"
+                    + "data DATE NOT NULL);";
             
             con = Conexao.conector();
             std = con.prepareStatement(sql);

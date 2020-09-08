@@ -7,8 +7,8 @@ public interface DadosDatabaseDev {
     /**
      *
      */
-    String USER_DATABASE = "icety";
-    String PASSWORD_DATABASE = "icety123";
+    String USER_DATABASE = "root";
+    String PASSWORD_DATABASE = "root";
     String URL = "jdbc:mysql://localhost:3306/sorveteria?useSSL=true&useTimezone=true&serverTimezone=UTC";
     String DRIVE = "com.mysql.cj.jdbc.Driver";
     

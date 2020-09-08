@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package telas;
 
 
@@ -12,11 +7,8 @@ import javax.swing.ImageIcon;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Element;
-import com.itextpdf.text.Font;
-import com.itextpdf.text.Font.FontFamily;
 import com.itextpdf.text.PageSize;
 import com.itextpdf.text.Paragraph;
-import com.itextpdf.text.Phrase;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
@@ -28,6 +20,10 @@ import java.text.DateFormat;
 import java.util.Date;
 import javax.swing.JOptionPane;
 import java.sql.*;
+import java.text.Format;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -416,14 +412,171 @@ public class TelaPrincipal extends javax.swing.JFrame {
 
     private void relatorioInsumosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_relatorioInsumosActionPerformed
        
-        int confirma = JOptionPane.showConfirmDialog(null, "Tem certeza que deseja fazer o download do relatório de insumos?", "Atenção", JOptionPane.YES_NO_OPTION);
+        int opcao = JOptionPane.showConfirmDialog(null, "Deseja efetuar o download do relatório entre duas datas ?");
+        
+        if(opcao == JOptionPane.YES_OPTION){
+        
+           GregorianCalendar calendar = new GregorianCalendar();
+            int dia = calendar.get(GregorianCalendar.DAY_OF_MONTH);
+            int ano = calendar.get(GregorianCalendar.YEAR);
+            int mes = calendar.get(Calendar.MONTH) + 1;
+            calendar.add(Calendar.DAY_OF_MONTH, 1);
+            
+            Date amanhaCalendar = calendar.getTime();
+            String amanhaTexto = "" + amanhaCalendar;
+            
+            String amanha = amanhaTexto.substring(8,10);
+            
+            String dataAtual;
+            
+            if(dia < 10 && mes <= 9){
+                dataAtual = "0" + dia + "/0" + mes + "/" + ano;
+            }else{
+                dataAtual = dia + "/" + mes + "/" + ano;
+            }
+            
+            String dataAmanha;
+           
+             if(mes <= 9){
+                dataAmanha = amanha + "/0" + mes + "/" + ano;
+            }else{
+                dataAmanha = amanha + "/" + mes + "/" + ano;
+            }
+            
+             String data1 = JOptionPane.showInputDialog(null, "Ex : " + dataAtual , "Data de inicio", JOptionPane.QUESTION_MESSAGE);
+             String data2 = JOptionPane.showInputDialog(null, "Ex : " + dataAmanha , "Data de fim", JOptionPane.QUESTION_MESSAGE);
+            
+        String calendarioData1Ano = data1.substring(6,10);
+        String calendarioData1Mes = data1.substring(3,5); 
+        String calendarioData1Dia = data1.substring(0,2);
+        
+        String calendarioData2Ano = data2.substring(6,10);
+        String calendarioData2Mes = data2.substring(3,5); 
+        String calendarioData2Dia = data2.substring(0,2);
+
+          
+        String calendarioDataInicio = calendarioData1Ano + "-" + calendarioData1Mes + "-" + calendarioData1Dia;
+        String calendarioDataFim = calendarioData2Ano + "-" + calendarioData2Mes + "-" + calendarioData2Dia;
+        
+        Document doc = new Document();
+        String caminhoArquivoProjeto = "relatorioInsumos(_'"+calendarioDataInicio+"' até _'"+calendarioDataFim+"'_).pdf";
+        String caminhoWindows = "C:/Users/NaCompra/Desktop/relatorioInsumos(_'"+calendarioDataInicio+"' até _'"+calendarioDataFim+"'_).pdf";
+
+        String nome_documento = caminhoArquivoProjeto;
+
+        try {
+            //Criando o arquivo, como default tá na pasta do projeto, pra mudar onde salvar o arquivo
+            // seria assim : PdfWriter.getInstance(doc, new FileOutputStream('.../nome_documento'));
+            PdfWriter.getInstance(doc, new FileOutputStream(nome_documento));
+
+            doc.open();
+            doc.setPageSize(PageSize.A4);
+            
+            Paragraph p = new Paragraph();
+            p.add("RELATÓRIO DE INSUMOS");
+            p.setAlignment(Element.ALIGN_CENTER);
+            p.setIndentationLeft(18);
+            p.setFirstLineIndent(-18);
+            
+            doc.add(p);
+            doc.add(new Paragraph(" "));
+            
+            //Criando tabela  com 4 colunas
+            PdfPTable tabela = new PdfPTable(5);
+
+            //Criando cabeçalho pra tabela
+            PdfPCell cabecalho = new PdfPCell(new Paragraph("Lista de Insumos"));
+            //Alinahando o texto deste cabeçalho ao centro da tabela
+            cabecalho.setHorizontalAlignment(Element.ALIGN_CENTER);
+            //Aqui ele seta o tamanho deste cabeçalho para as 4 colunas
+            cabecalho.setColspan(5);
+
+            //Criando os cabeçalhos dos dados do banco
+            PdfPCell cabecalhoId = new PdfPCell(new Paragraph("Código"));
+            PdfPCell cabecalhoNome = new PdfPCell(new Paragraph("Nome"));
+            PdfPCell cabecalhoPreco = new PdfPCell(new Paragraph("Preço"));
+            PdfPCell cabecalhoQuantidade = new PdfPCell(new Paragraph("Quantidade"));
+            PdfPCell cabecalhoData = new PdfPCell(new Paragraph("data"));
+
+            //Adicionando a tabela todos os cabeçalhos
+            tabela.addCell(cabecalho);
+            tabela.addCell(cabecalhoId);
+            tabela.addCell(cabecalhoNome);
+            tabela.addCell(cabecalhoPreco);
+            tabela.addCell(cabecalhoQuantidade);
+            tabela.addCell(cabecalhoData);
+
+            conexao = Conexao.conector();
+            ResultSet rs = con.ConsultarInsumosEntreDatas(calendarioDataInicio, calendarioDataFim);
+            ResultSet rs1 = con.ConsultarTotalValorInsumosEntreDuasDatas(calendarioDataInicio, calendarioDataFim);
+            int id = 0;
+            String _nome = null, _preco = null, _quantidade = null, _data = null;
+
+            while(rs.next()){
+                id = rs.getInt("id");
+                _nome = rs.getString("nomeproduto");
+                _preco = rs.getString("preco");
+                _quantidade = rs.getString("quantidade");
+                _data = rs.getString("data");
+                
+                //Convertendo o id para string
+                String identificadorProduto = String.valueOf(id);
+
+                //Adicionando as linhas da tabela com os dados do banco
+                tabela.addCell(identificadorProduto);
+                tabela.addCell(_nome);
+                tabela.addCell(_preco);
+                tabela.addCell(_quantidade);
+                tabela.addCell(_data);
+                
+            }
+            
+            PdfPTable tabela1 = new PdfPTable(1);
+            
+            PdfPCell cabecalho1 = new PdfPCell(new Paragraph("Valor Total dos Insumos Cadastradas"));
+            cabecalho1.setHorizontalAlignment(Element.ALIGN_CENTER);
+            cabecalho1.setColspan(1);
+            
+            PdfPCell cabecalho1Total = new PdfPCell(new Paragraph("Total:"));
+            cabecalho1Total.setHorizontalAlignment(Element.ALIGN_CENTER);
+            
+            tabela1.addCell(cabecalho1);
+            tabela1.addCell(cabecalho1Total);
+////
+            String _total = "";
+            
+            while(rs1.next()) {
+                _total = rs1.getString("total");                
+                
+                tabela1.addCell("                                  ------------------ " + _total + " R$" + " ------------------"); 
+                
+            }
+
+            //Adicionando a tabela ao documento pdf
+            doc.add(tabela);
+            doc.add(tabela1);
+            PreparedStatement pst = null;
+
+        } catch (FileNotFoundException | DocumentException | SQLException ex) {
+            Logger.getLogger(TelaDevDatabase.class.getName()).log(Level.SEVERE, null, ex);
+        }finally{
+            //Fecha a configuração do documento
+             JOptionPane.showMessageDialog(null, "O Download do relatório foi realizado com sucesso e se encontra na Área de Trabalho.");
+            
+            doc.close();
+        }
+            
+        }else{
+            int confirma = JOptionPane.showConfirmDialog(null, "Tem certeza que deseja fazer o download do relatório de insumos?", "Atenção", JOptionPane.YES_NO_OPTION);
             if(confirma==JOptionPane.YES_OPTION) {
                 JOptionPane.showMessageDialog(null, "O Download do relatório foi realizado com sucesso e se encontra na Área de Trabalho.");
             
         
         Document doc = new Document();
+        String caminhoArquivoProjeto = "relatorioInsumos.pdf";
+        String caminhoWindows = "C:/Users/NaCompra/Desktop/relatorioInsumos.pdf";
 
-        String nome_documento = "C:/Users/NaCompra/Desktop/relatorioInsumos.pdf";
+        String nome_documento = caminhoArquivoProjeto;
 
         try {
             //Criando o arquivo, como default tá na pasta do projeto, pra mudar onde salvar o arquivo
@@ -525,6 +678,9 @@ public class TelaPrincipal extends javax.swing.JFrame {
             doc.close();
         }
             }
+        }
+        
+        
     }//GEN-LAST:event_relatorioInsumosActionPerformed
 
     private void RelatorioProdutosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RelatorioProdutosActionPerformed

@@ -22,7 +22,7 @@ public static Connection conector() throws SQLException {
 java.sql.Connection conexao = null;
 String driver = DadosDatabaseDev.DRIVE;
 String URL = DadosDatabaseDev.URL;
-String usuario = DadosDatabaseDev.USER_DATABASE;   
+String usuario = "root";   
 String senha = DadosDatabaseDev.PASSWORD_DATABASE;  
     
     //Fazendo conexão com o drive do MySQL
@@ -247,7 +247,6 @@ public boolean cadastrarProduto(String nome_produto, String preco, String tamanh
      public ResultSet ConsultarTotalValorInsumos() throws SQLException {
 
         String sql = "select SUM(preco) as total from produtosdiversos;";
-        
         con = Conexao.conector();
         st = con.createStatement();
         ResultSet rs = null;
@@ -255,16 +254,15 @@ public boolean cadastrarProduto(String nome_produto, String preco, String tamanh
 
         return rs;
     }
-     
-     public ResultSet ConsultarAllProduto() throws SQLException {
+     public ResultSet ConsultarTotalValorInsumosEntreDuasDatas(String data1, String data2) throws SQLException {
 
-        String sql = "select * from produtos;";
+        String sql = "select SUM(preco) as total from produtosdiversos where data BETWEEN '"+data1+"' AND '"+data2+"';";
         
         con = Conexao.conector();
         st = con.createStatement();
         ResultSet rs = null;
         rs = st.executeQuery(sql);
-
+        
         return rs;
     }
      
@@ -279,6 +277,31 @@ public boolean cadastrarProduto(String nome_produto, String preco, String tamanh
 
         return rs;
     }
+     
+      public ResultSet ConsultarAllProduto() throws SQLException {
+
+        String sql = "select * from produtos;";
+        
+        con = Conexao.conector();
+        st = con.createStatement();
+        ResultSet rs = null;
+        rs = st.executeQuery(sql);
+
+        return rs;
+    }
+     
+     
+     public ResultSet ConsultarInsumosEntreDatas(String data1, String data2) throws SQLException {
+         String sql = "select * from produtosdiversos where data BETWEEN ('"+data1+"') AND ('"+data2+"');";
+         
+        con = Conexao.conector();
+        st = con.createStatement();
+        ResultSet rs = null;
+        rs = st.executeQuery(sql);
+
+        return rs;
+         
+     }
      
      public ResultSet ConsultarAllProdutoDiverso() throws SQLException {
 
