@@ -576,7 +576,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
         String caminhoArquivoProjeto = "relatorioInsumos.pdf";
         String caminhoWindows = "C:/Users/NaCompra/Desktop/relatorioInsumos.pdf";
 
-        String nome_documento = caminhoArquivoProjeto;
+        String nome_documento = caminhoWindows;
 
         try {
             //Criando o arquivo, como default tá na pasta do projeto, pra mudar onde salvar o arquivo
