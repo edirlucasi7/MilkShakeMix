@@ -65,16 +65,17 @@ public class TelaProdutoDiverso extends javax.swing.JInternalFrame {
             ResultSet rs = con.ConsultarAllProdutoDiverso();
             
             int id = 0;
-             String _nomeproduto = null, _preco = null, _quantidade = null;
+             String _nomeproduto = null, _preco = null, _quantidade = null, _data = null;
             
             while (rs.next()) {
                     id = rs.getInt("id");
                     _nomeproduto = rs.getString("nomeproduto");
                     _preco = rs.getString("preco");
                     _quantidade = rs.getString("quantidade");
+                    _data = rs.getString("data");
 
                     modelo = (DefaultTableModel) tblProdutoDiverso.getModel();
-                    modelo.addRow(new Object[]{"" + id, _nomeproduto, _preco, _quantidade});
+                    modelo.addRow(new Object[]{"" + id, _nomeproduto, _preco, _quantidade, _data});
 
                 }
             
@@ -255,13 +256,21 @@ public class TelaProdutoDiverso extends javax.swing.JInternalFrame {
     }
     
     private void alterarProdutoDiverso() {
+         String campoData = txtDataInsumo.getText();
+           String anoCampoData = campoData.substring(6,10);
+            String mesCampoData = campoData.substring(3,5);
+            String diaCampoData = campoData.substring(0,2);
+            
+            String calendar = anoCampoData + "-" + mesCampoData + "-" + diaCampoData;
+        
+        
         String sql = "update produtosdiversos set nomeproduto=?, quantidade=?, preco=?, data=? where id=?";
         try {
             pst = conexao.prepareStatement(sql);
             pst.setString(1, txtProdutoNome.getText());
             pst.setString(2, (String) cboProdutoQuantidade.getSelectedItem());
             pst.setString(3, txtProdutoPreco.getText());
-            pst.setString(4, txtDataInsumo.getText());
+            pst.setString(4, calendar);
             pst.setString(5, txtProdutoId.getText());
             
             if(txtProdutoNome.getText().isEmpty() || txtProdutoPreco.getText().isEmpty()) {
