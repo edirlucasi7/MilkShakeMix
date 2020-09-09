@@ -89,14 +89,6 @@
                   <Group type="102" attributes="0">
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" alignment="0" attributes="0">
-                              <EmptySpace min="-2" pref="65" max="-2" attributes="0"/>
-                              <Component id="btnProdutoCadastrar" min="-2" pref="158" max="-2" attributes="0"/>
-                              <EmptySpace min="-2" pref="38" max="-2" attributes="0"/>
-                              <Component id="btnProdutoAtualizar" min="-2" pref="158" max="-2" attributes="0"/>
-                              <EmptySpace min="-2" pref="36" max="-2" attributes="0"/>
-                              <Component id="btnProdutoDeletar" min="-2" pref="158" max="-2" attributes="0"/>
-                          </Group>
-                          <Group type="102" alignment="0" attributes="0">
                               <EmptySpace min="-2" pref="62" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
                                   <Component id="jScrollPane1" min="-2" pref="575" max="-2" attributes="0"/>
@@ -120,14 +112,17 @@
                                           <Component id="jLabel2" alignment="0" min="-2" max="-2" attributes="0"/>
                                           <Component id="txtProdutoNome" alignment="0" min="-2" pref="204" max="-2" attributes="0"/>
                                       </Group>
-                                      <EmptySpace min="-2" pref="40" max="-2" attributes="0"/>
                                       <Group type="103" groupAlignment="0" attributes="0">
-                                          <Group type="102" attributes="0">
+                                          <Group type="102" alignment="0" attributes="0">
+                                              <EmptySpace min="-2" pref="40" max="-2" attributes="0"/>
+                                              <Component id="jLabel11" min="-2" max="-2" attributes="0"/>
+                                          </Group>
+                                          <Group type="102" alignment="0" attributes="0">
+                                              <EmptySpace min="-2" pref="34" max="-2" attributes="0"/>
                                               <Component id="txtDataInsumo" min="-2" pref="102" max="-2" attributes="0"/>
-                                              <EmptySpace max="-2" attributes="0"/>
+                                              <EmptySpace type="separate" max="-2" attributes="0"/>
                                               <Component id="jLabel10" min="-2" max="-2" attributes="0"/>
                                           </Group>
-                                          <Component id="jLabel11" min="-2" max="-2" attributes="0"/>
                                       </Group>
                                   </Group>
                                   <Group type="102" alignment="0" attributes="0">
@@ -141,6 +136,14 @@
                                       <Component id="cboProdutoQuantidade" min="-2" pref="204" max="-2" attributes="0"/>
                                   </Group>
                               </Group>
+                          </Group>
+                          <Group type="102" alignment="0" attributes="0">
+                              <EmptySpace min="-2" pref="65" max="-2" attributes="0"/>
+                              <Component id="btnProdutoCadastrar" min="-2" pref="158" max="-2" attributes="0"/>
+                              <EmptySpace min="-2" pref="38" max="-2" attributes="0"/>
+                              <Component id="btnProdutoAtualizar" min="-2" pref="158" max="-2" attributes="0"/>
+                              <EmptySpace min="-2" pref="36" max="-2" attributes="0"/>
+                              <Component id="btnProdutoDeletar" min="-2" pref="158" max="-2" attributes="0"/>
                           </Group>
                       </Group>
                       <EmptySpace max="32767" attributes="0"/>
@@ -168,13 +171,13 @@
                           <Component id="jLabel9" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="jLabel11" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace max="-2" attributes="0"/>
+                      <EmptySpace type="separate" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="txtProdutoId" min="-2" pref="38" max="-2" attributes="0"/>
                           <Group type="103" alignment="0" groupAlignment="3" attributes="0">
                               <Component id="txtProdutoNome" alignment="3" min="-2" pref="35" max="-2" attributes="0"/>
-                              <Component id="txtDataInsumo" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="jLabel10" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="txtDataInsumo" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
                       </Group>
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
@@ -348,11 +351,12 @@
                 <Component class="javax.swing.JTable" name="tblProdutoDiverso">
                   <Properties>
                     <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
-                      <Table columnCount="4" rowCount="0">
+                      <Table columnCount="5" rowCount="0">
                         <Column editable="true" title="C&#xf3;digo" type="java.lang.Object"/>
                         <Column editable="true" title="Nome" type="java.lang.Object"/>
                         <Column editable="true" title="Pre&#xe7;o" type="java.lang.Object"/>
                         <Column editable="true" title="Quantidade" type="java.lang.Object"/>
+                        <Column editable="true" title="Data" type="java.lang.Object"/>
                       </Table>
                     </Property>
                   </Properties>
@@ -401,13 +405,6 @@
                 <Property name="text" type="java.lang.String" value="Ex: 05/09/2020"/>
               </Properties>
             </Component>
-            <Component class="javax.swing.JFormattedTextField" name="txtDataInsumo">
-              <Properties>
-                <Property name="formatterFactory" type="javax.swing.JFormattedTextField$AbstractFormatterFactory" editor="org.netbeans.modules.form.editors.AbstractFormatterFactoryEditor" preCode="try {" postCode="} catch (java.text.ParseException ex) {&#xa;ex.printStackTrace();&#xa;}">
-                  <Format format="##/##/####" subtype="-1" type="5"/>
-                </Property>
-              </Properties>
-            </Component>
             <Component class="javax.swing.JLabel" name="jLabel11">
               <Properties>
                 <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
@@ -415,6 +412,11 @@
                 </Property>
                 <Property name="text" type="java.lang.String" value="*Data"/>
               </Properties>
+            </Component>
+            <Component class="javax.swing.JTextField" name="txtDataInsumo">
+              <AuxValues>
+                <AuxValue name="JavaCodeGenerator_InitCodePre" type="java.lang.String" value="try{  &#xa;   javax.swing.text.MaskFormatter data= new javax.swing.text.MaskFormatter(&quot;##/##/####&quot;);  &#xa;   txtDataInsumo = new javax.swing.JFormattedTextField(data);  &#xa;}  &#xa;   catch (Exception e){  &#xa;}"/>
+              </AuxValues>
             </Component>
           </SubComponents>
         </Container>

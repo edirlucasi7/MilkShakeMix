@@ -117,12 +117,12 @@ public class TelaProdutoDiverso extends javax.swing.JInternalFrame {
 
     private void cadastrarProdutoDiverso() {
         
-        
-        
-        
             String campoData = txtDataInsumo.getText();
-            
-            String anoCampoData = campoData.substring(6,10);
+        
+           if(campoData.equals("  /  /    ")){
+               JOptionPane.showMessageDialog(null, "Preencha todos os campos obrigatórios");
+           }else{
+               String anoCampoData = campoData.substring(6,10);
             String mesCampoData = campoData.substring(3,5);
             String diaCampoData = campoData.substring(0,2);
             
@@ -148,7 +148,7 @@ public class TelaProdutoDiverso extends javax.swing.JInternalFrame {
             pst.setString(3, (String) cboProdutoQuantidade.getSelectedItem());
             pst.setString(4, calendar);
 
-            if (txtProdutoNome.getText().isEmpty() || txtProdutoPreco.getText().isEmpty() || txtDataInsumo.getText().isEmpty()) {
+            if (txtProdutoNome.getText().isEmpty() || txtProdutoPreco.getText().isEmpty() || txtDataInsumo.getText().equals("  /  /    ")) {
                 JOptionPane.showMessageDialog(null, "Preencha todos os campos obrigatórios");
             } else {
 
@@ -157,6 +157,7 @@ public class TelaProdutoDiverso extends javax.swing.JInternalFrame {
                     JOptionPane.showMessageDialog(null, "Produto adicionado com sucesso");
                     txtProdutoNome.setText(null);
                     txtProdutoPreco.setText(null);
+                    txtDataInsumo.setText("");
                 }
             }
             
@@ -184,12 +185,8 @@ public class TelaProdutoDiverso extends javax.swing.JInternalFrame {
             JOptionPane.showMessageDialog(null, e);
         }  
          }
-        
-            
-            
-            
-        
-
+           }
+      
     }
 
     private void pesquisarProdutoDiverso() {
@@ -211,16 +208,17 @@ public class TelaProdutoDiverso extends javax.swing.JInternalFrame {
             conexao = Conexao.conector();
             ResultSet rs = con.ConsultarProdutoDiverso(txtProdutoPesquisar.getText());
              int id = 0;
-             String _nome = null, _preco = null, _quantidade = null;
+             String _nome = null, _preco = null, _quantidade = null, _data = null;
              
              while (rs.next()) {
                     id = rs.getInt("id");
                     _nome = rs.getString("nomeproduto");
                     _preco = rs.getString("preco");
                     _quantidade = rs.getString("quantidade");
+                    _data = rs.getString("data");
 
                     modelo = (DefaultTableModel) tblProdutoDiverso.getModel();
-                    modelo.addRow(new Object[]{"" + id, _nome, _preco, _quantidade});
+                    modelo.addRow(new Object[]{"" + id, _nome, _preco, _quantidade, _data});
 
                 }
             
@@ -234,6 +232,17 @@ public class TelaProdutoDiverso extends javax.swing.JInternalFrame {
         txtProdutoId.setText(tblProdutoDiverso.getValueAt((tblProdutoDiverso.getSelectedRow()), 0).toString());
         txtProdutoNome.setText(tblProdutoDiverso.getValueAt((tblProdutoDiverso.getSelectedRow()), 1).toString());
         txtProdutoPreco.setText(tblProdutoDiverso.getValueAt((tblProdutoDiverso.getSelectedRow()), 2).toString());
+        
+        String data = tblProdutoDiverso.getValueAt((tblProdutoDiverso.getSelectedRow()), 4).toString();
+       
+        String ano = data.substring(0,4);
+        String mes = data.substring(5, 7);
+        String dia = data.substring(8, 10);
+        
+       String calendario = "" + dia + mes + ano; 
+       
+       txtDataInsumo.setText(calendario);
+               
         String quantidade = tblProdutoDiverso.getValueAt((tblProdutoDiverso.getSelectedRow()), 3).toString();
         cboProdutoQuantidade.setSelectedItem(quantidade);
         
@@ -335,8 +344,8 @@ public class TelaProdutoDiverso extends javax.swing.JInternalFrame {
         txtProdutoId = new javax.swing.JTextField();
         jLabel8 = new javax.swing.JLabel();
         jLabel10 = new javax.swing.JLabel();
-        txtDataInsumo = new javax.swing.JFormattedTextField();
         jLabel11 = new javax.swing.JLabel();
+        txtDataInsumo = new javax.swing.JTextField();
 
         setClosable(true);
         setIconifiable(true);
@@ -425,7 +434,7 @@ public class TelaProdutoDiverso extends javax.swing.JInternalFrame {
 
             },
             new String [] {
-                "Código", "Nome", "Preço", "Quantidade"
+                "Código", "Nome", "Preço", "Quantidade", "Data"
             }
         ));
         tblProdutoDiverso.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -449,14 +458,15 @@ public class TelaProdutoDiverso extends javax.swing.JInternalFrame {
         jLabel10.setFont(new java.awt.Font("Fira Code Light", 1, 12)); // NOI18N
         jLabel10.setText("Ex: 05/09/2020");
 
-        try {
-            txtDataInsumo.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.MaskFormatter("##/##/####")));
-        } catch (java.text.ParseException ex) {
-            ex.printStackTrace();
-        }
-
         jLabel11.setFont(new java.awt.Font("Fira Code Light", 1, 14)); // NOI18N
         jLabel11.setText("*Data");
+
+        try{
+            javax.swing.text.MaskFormatter data= new javax.swing.text.MaskFormatter("##/##/####");
+            txtDataInsumo = new javax.swing.JFormattedTextField(data);
+        }
+        catch (Exception e){
+        }
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -464,13 +474,6 @@ public class TelaProdutoDiverso extends javax.swing.JInternalFrame {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(65, 65, 65)
-                        .addComponent(btnProdutoCadastrar, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(38, 38, 38)
-                        .addComponent(btnProdutoAtualizar, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(36, 36, 36)
-                        .addComponent(btnProdutoDeletar, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGap(62, 62, 62)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -491,13 +494,15 @@ public class TelaProdutoDiverso extends javax.swing.JInternalFrame {
                                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jLabel2)
                                     .addComponent(txtProdutoNome, javax.swing.GroupLayout.PREFERRED_SIZE, 204, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(40, 40, 40)
                                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(jPanel2Layout.createSequentialGroup()
+                                        .addGap(40, 40, 40)
+                                        .addComponent(jLabel11))
+                                    .addGroup(jPanel2Layout.createSequentialGroup()
+                                        .addGap(34, 34, 34)
                                         .addComponent(txtDataInsumo, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(jLabel10))
-                                    .addComponent(jLabel11)))
+                                        .addGap(18, 18, 18)
+                                        .addComponent(jLabel10))))
                             .addGroup(jPanel2Layout.createSequentialGroup()
                                 .addComponent(jLabel3)
                                 .addGap(179, 179, 179)
@@ -505,7 +510,14 @@ public class TelaProdutoDiverso extends javax.swing.JInternalFrame {
                             .addGroup(jPanel2Layout.createSequentialGroup()
                                 .addComponent(txtProdutoPreco, javax.swing.GroupLayout.PREFERRED_SIZE, 204, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(21, 21, 21)
-                                .addComponent(cboProdutoQuantidade, javax.swing.GroupLayout.PREFERRED_SIZE, 204, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                                .addComponent(cboProdutoQuantidade, javax.swing.GroupLayout.PREFERRED_SIZE, 204, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(65, 65, 65)
+                        .addComponent(btnProdutoCadastrar, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(38, 38, 38)
+                        .addComponent(btnProdutoAtualizar, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(36, 36, 36)
+                        .addComponent(btnProdutoDeletar, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
@@ -526,13 +538,13 @@ public class TelaProdutoDiverso extends javax.swing.JInternalFrame {
                     .addComponent(jLabel2)
                     .addComponent(jLabel9)
                     .addComponent(jLabel11))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(18, 18, 18)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(txtProdutoId, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(txtProdutoNome, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(txtDataInsumo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jLabel10)))
+                        .addComponent(jLabel10)
+                        .addComponent(txtDataInsumo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5)
@@ -639,7 +651,7 @@ public class TelaProdutoDiverso extends javax.swing.JInternalFrame {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable tblProdutoDiverso;
-    private javax.swing.JFormattedTextField txtDataInsumo;
+    private javax.swing.JTextField txtDataInsumo;
     private javax.swing.JTextField txtProdutoId;
     private javax.swing.JTextField txtProdutoNome;
     private javax.swing.JTextField txtProdutoPesquisar;
