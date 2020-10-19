@@ -1,5 +1,6 @@
 <h3>MILK SHAKE MIX</h3>
 
+- Aplicação desktop e banco local.
 - Aplicação desenvolvida com java 8.
 - Aplicação desenvolvida para uma das franquias Milk Shake Mix que são predominantes no interior do ceará.
 
