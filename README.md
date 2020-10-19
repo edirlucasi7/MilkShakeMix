@@ -9,6 +9,7 @@
 - CRUD de produtos
 - CRUD de insumos
 - A aplicação também cadastra todas as vendas, gera nota não fiscal e gera relatórios de: produtos, usuários, vendas, insumos.
+- A aplicação gera relatório de vendas gerais e entre duas datas.
 
 <h5>Banco de dados</h5>
 
